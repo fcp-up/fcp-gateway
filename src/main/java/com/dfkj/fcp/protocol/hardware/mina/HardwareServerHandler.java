@@ -25,9 +25,9 @@ public class HardwareServerHandler extends IoHandlerAdapter {
 
         logger.debug("HardwareServerHandler.messageReceived:" + message.getClass().toString() + " " + FormatUtil.DATE_FORMAT.format(new Date()));
 
-        if (message instanceof DataMessage) {
+       /* if (message instanceof DataMessage) {
             DataMessage dataMessage = (DataMessage) message;
-        }
+        }*/
         
         /**
          * 将处理完的数据转换格式同步发给平台Mina客户端
@@ -38,7 +38,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
 		/*
 		 * 获取当前设备需要下发的Message Queue 目前只支持控制器
 		 */
-        if (message instanceof ControllerMessage) {
+        /*if (message instanceof ControllerMessage) {
             ControllerMessage ctrlMessage = (ControllerMessage) message;
             for (ControllerMessageItem item : ctrlMessage.getItems()) {
                 while (HardwareInstanceFactory.getMinaServerInstance().hasMessage(item.hashCode())){
@@ -47,7 +47,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                     session.write(msg);
                 }
             }
-        }
+        }*/
 
     }
 
