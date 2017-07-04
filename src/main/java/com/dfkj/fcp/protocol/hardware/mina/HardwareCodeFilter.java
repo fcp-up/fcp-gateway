@@ -9,7 +9,6 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.core.write.DefaultWriteRequest;
 import org.apache.mina.core.write.WriteRequest;
 
-import com.dfkj.fcp.core.constant.EUniversalResponseCode;
 import com.dfkj.fcp.core.logger.AcpLogger;
 import com.dfkj.fcp.core.util.ByteArray;
 import com.dfkj.fcp.core.util.HexUtil;

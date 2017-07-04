@@ -1,5 +1,9 @@
 package com.dfkj.fcp.core.util;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+
 public final class HexUtil {
 
 	public static String ByteToString(byte[] sourceByteArray, String gap) {
@@ -53,6 +57,15 @@ public final class HexUtil {
 		}
 
 		return bytes;
+	}
+	
+	public static char[] getChars (byte[] bytes) {
+	      Charset cs = Charset.forName ("UTF-8");
+	      ByteBuffer bb = ByteBuffer.allocate (bytes.length);
+	      bb.put (bytes);
+	      bb.flip ();
+	       CharBuffer cb = cs.decode (bb);	  
+	   return cb.array();
 	}
 	
 	/*public static byte[] HexStringToBytes(String str, String gap) {

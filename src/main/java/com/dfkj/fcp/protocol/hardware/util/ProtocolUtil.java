@@ -23,50 +23,29 @@ public class ProtocolUtil {
 	 */
 	public static Message unpack(ByteArray byteArray) {
 		Message message = null;
-
 		do {
-			if (byteArray.getBeginByte() != (byte) 0x7E || byteArray.getLastByte() != (byte) 0x7E) {
+			if (isNotData(byteArray)||isNotHeartBeat(byteArray)) {
 				logger.debug("无效的数据包.");
 				break;
 			}
-
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
-			byteArray.replace(new byte[] { 0x7D, 0x02 }, new byte[] { 0x7E }).replace(new byte[] { 0x7D, 0x01 },
-					new byte[] { 0x7D }); // 反转义
-
-			// 因校验规则为异或，所以连同校验位不为0则数据不正确
-			
-			byteArray.removeLastByte();
-
-			message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));
-
-			
-			//logger.debug(String.format("消息标识[%2X].", byteArray.getAt(8)));
-			
+			// CRC校验		
+			//去掉校验码			
+			byteArray.removeAt(byteArray.size() -2 , 2); 		    		
+		    message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));				
+			//集中器地址
+		    String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
+		    message.setCenterNo(centerNoStr);		    
 			// 消息类型
-			message.setMsgType(EMessageTypeFactory(byteArray.getShortAt(0)));
-			
-			//解决控制器上报问题 2016-09-19 mhz
-			if(byteArray.getAt(8) == 0x40){
-				message.setMsgType(EMessageType.CTRL_REPORT_STATUS);
-			}
-			
-			byteArray.removeAt(0, 2);
-			
-		
-
-			// TODO 暂不做消息长度的验证
+			message.setMsgType(EMessageTypeFactory(byteArray.getShortAt(15)));	
+			byteArray.removeAt(0, 12);
+			//获取消息长度
 			short messageLength = byteArray.getShortAt(0);
 			byteArray.removeAt(0, 2);
-
-
-
 			// 消息时间
 			message.setRecvMsgDate(new Date());
-
 			// 设备类别
 			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));
-
 		} while (false);
 
 		return message;
@@ -98,20 +77,11 @@ public class ProtocolUtil {
 		
 		EMessageType tp = null;
 		switch (value) {
-			case 0x0000: // 控制器设备的心跳
-				tp = EMessageType.CTRL_REPORT_STATUS;
+			case 0x00:
+				tp = EMessageType.HELLO;
 				break;
-			case 0x0002:
-				tp = EMessageType.HEARTBEAT;
-				break;
-			case 0x200:
+			case 0x01:
 				tp = EMessageType.SENSOR_DATA;
-				break;
-			case 0xFFF0:
-				tp = EMessageType.GATEWAY_HEARTBEAT;
-				break;
-			case 0x8001:
-				tp = EMessageType.UNIVERSAL_RESPONSE;
 				break;
 			default:
 				tp = EMessageType.UNKNOWN;
@@ -128,8 +98,8 @@ public class ProtocolUtil {
 	 */
 	public static EDeviceCategory EDeviceCategoryFactory(EMessageType msgType) {
 		EDeviceCategory category = EDeviceCategory.COMMON;
-		if (msgType == EMessageType.HEARTBEAT) {
-			category = EDeviceCategory.COMMON;
+		if (msgType == EMessageType.HELLO) {
+			category = EDeviceCategory.GATEWAY;
 		} else if (msgType == EMessageType.SENSOR_DATA) {
 			category = EDeviceCategory.SENSOR;
 		} else if (msgType == EMessageType.CTRL_REPORT_STATUS) {
@@ -150,5 +120,27 @@ public class ProtocolUtil {
 		ByteArray content = new ByteArray();		
 
 		return content;
+	}
+	
+	/**
+	 * 判断是否是数据包(节点数据或终端握手数据)
+	 * @param content
+	 * @return
+	 */
+	public static boolean  isNotData(ByteArray content){
+		boolean flag = true;
+		if((content.getBeginByte() == 0x7E 
+				|| content.getLastByte() == 0x7E)){
+			flag = false;
+		}
+		return flag;
+	}	
+	
+	public static boolean isNotHeartBeat(ByteArray content){
+		boolean flag = true;
+		if(content.getLongAt(0) == 0){
+			flag = false;
+		}
+		return flag;
 	}
 }

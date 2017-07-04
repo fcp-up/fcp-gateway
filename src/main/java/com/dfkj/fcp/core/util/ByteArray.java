@@ -326,4 +326,15 @@ public final class ByteArray {
 		bytes[index2] = (byte) (bytes[index1] ^ bytes[index2]);
 		bytes[index1] = (byte) (bytes[index1] ^ bytes[index2]);
 	}
+	
+	public final byte[] subByteArray(ByteArray bytes,int index1,int index2){
+		byte[] b = new byte[12];
+		int i = 0;
+		while(index1 < index2){
+			b[i] = bytes.getAt(index1);	
+			index1 += 1;
+			i += 1;			
+		}
+		return b;
+	}
 }
