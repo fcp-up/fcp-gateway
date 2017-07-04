@@ -12,30 +12,90 @@ import java.util.Date;
  * 消息类
  */
 public class Message implements Cloneable,Serializable {
-
-	protected int sequence;
-	protected long ack; // 应答标志位： ack < 0时，此字段无效即非应答   >0 应答(对应的应答流水号)
-	protected int id;	//	id，以保证唯一标识
-	protected String deviceNo;
+	
+	protected String centerNo; //集中器ID
+	protected int deviceId; //设备ID
+	protected EDeviceCategory devCategory; // 设备类别
+	protected int isAlarm; //是否报警
+	protected float currentValue;//当前值
+	protected float voltage;//电池电压
 	protected String orgData;
 	protected Date recvMsgDate; // 收到message时的时间
 	protected EMessageType msgType; // 消息类型
-	protected EDeviceCategory devCategory; // 设备类别
-	protected EPriorityLvl ptyLvl; // 优先级
-	protected boolean hasSubPackage; // 是否有分包
-	protected int subPackageIndex; // 分包序号
-	protected int version;	//	版本号
-	protected Object tag;	//	标记（可用作绑定其他未在Message中定义的数据）
 	
-	public Message() {
-		ack = -1;
-		ptyLvl = EPriorityLvl.MEDIUM;
-		hasSubPackage = false;
-		subPackageIndex = 0;
+	public String getCenterNo() {
+		return centerNo;
+	}
+	
+	public void setCenterNo(String centerNo) {
+		this.centerNo = centerNo;
+	}
+	
+	public int getDeviceId() {
+		return deviceId;
+	}
+	
+	public void setDeviceId(int deviceId) {
+		this.deviceId = deviceId;
+	}
+	
+	public EDeviceCategory getDevCategory() {
+		return devCategory;
+	}
+	
+	public void setDevCategory(EDeviceCategory devCategory) {
+		this.devCategory = devCategory;
+	}
+	
+	public int getIsAlarm() {
+		return isAlarm;
+	}
+	
+	public void setIsAlarm(int isAlarm) {
+		this.isAlarm = isAlarm;
+	}
+	
+	public float getCurrentValue() {
+		return currentValue;
+	}
+	
+	public void setCurrentValue(float currentValue) {
+		this.currentValue = currentValue;
+	}		
+	
+	public float getVoltage() {
+		return voltage;
 	}
 
+	public void setVoltage(float voltage) {
+		this.voltage = voltage;
+	}
+
+	public String getOrgData() {
+		return orgData;
+	}
+	
+	public void setOrgData(String orgData) {
+		this.orgData = orgData;
+	}
+	
+	public Date getRecvMsgDate() {
+		return recvMsgDate;
+	}
+	
+	public void setRecvMsgDate(Date recvMsgDate) {
+		this.recvMsgDate = recvMsgDate;
+	}
+	
+	public EMessageType getMsgType() {
+		return msgType;
+	}
+	
+	public void setMsgType(EMessageType msgType) {
+		this.msgType = msgType;
+	}
+	
 	public Message(String orgData) {
-		this();
 		this.orgData = orgData;
 	}
 	
@@ -56,7 +116,7 @@ public class Message implements Cloneable,Serializable {
 
 	@Override
 	public int hashCode() {
-		String value = deviceNo.replaceAll("-", "");
+		String value = centerNo + deviceId;
 		int hash = Integer.parseInt(value);
         return hash;
 	}
@@ -64,118 +124,14 @@ public class Message implements Cloneable,Serializable {
 	@Override
 	public boolean equals(Object o) {
 		return (this.hashCode() == o.hashCode());
-	}
+	}	
 	
 	@Override
 	public String toString() {
-		return String.format("设备号:%s 版本号:%d 流水号:%d 设备类别:%s 消息类型:%s 优先级:%s 接收时间:%s", 
-				this.deviceNo, this.version, this.sequence,
-				this.devCategory, this.msgType, this.ptyLvl, 
+		return String.format("集中器编号:%s 设备类别:%s 消息类型:%s 接收时间:%s", 
+				this.centerNo,this.devCategory, this.msgType, 
 				recvMsgDate == null ? "?" : FormatUtil.DATE_FORMAT.format(recvMsgDate));
 	}
-
-	public int getSequence() {
-		return sequence;
-	}
-
-	public void setSequence(int sequence) {
-		this.sequence = sequence;
-	}
-
-	public long getAck() {
-		return ack;
-	}
-
-	public void setAck(int ack) {
-		this.ack = ack;
-	}
 	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getDeviceNo() {
-		return deviceNo;
-	}
-
-	public void setDeviceNo(String deviceNo) {
-		this.deviceNo = deviceNo;
-	}
-
-	public String getOrgData() {
-		return orgData;
-	}
-
-	public void setOrgData(String orgData) {
-		this.orgData = orgData;
-	}
-
-	public Date getRecvMsgDate() {
-		return recvMsgDate;
-	}
-
-	public void setRecvMsgDate(Date recvMsgDate) {
-		this.recvMsgDate = recvMsgDate;
-	}
-
-	public EMessageType getMsgType() {
-		return msgType;
-	}
-
-	public void setMsgType(EMessageType msgType) {
-		this.msgType = msgType;
-	}
-
-	public EDeviceCategory getDevCategory() {
-		return devCategory;
-	}
-
-	public void setDevCategory(EDeviceCategory devCategory) {
-		this.devCategory = devCategory;
-	}
-
-	public EPriorityLvl getPtyLvl() {
-		return ptyLvl;
-	}
-
-	public void setPtyLvl(EPriorityLvl ptyLvl) {
-		this.ptyLvl = ptyLvl;
-	}
-
-	public boolean isHasSubPackage() {
-		return hasSubPackage;
-	}
-
-	public void setHasSubPackage(boolean hasSubPackage) {
-		this.hasSubPackage = hasSubPackage;
-	}
-
-	public int getSubPackageIndex() {
-		return subPackageIndex;
-	}
-
-	public void setSubPackageIndex(int subPackageIndex) {
-		this.subPackageIndex = subPackageIndex;
-	}
-
-	public int getVersion() {
-		return version;
-	}
-
-	public void setVersion(int version) {
-		this.version = version;
-	}
-
-	public Object getTag() {
-		return tag;
-	}
-
-	public void setTag(Object tag) {
-		this.tag = tag;
-	}
 
 }

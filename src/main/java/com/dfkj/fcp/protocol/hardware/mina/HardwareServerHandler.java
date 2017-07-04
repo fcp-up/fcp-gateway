@@ -5,12 +5,8 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import com.dfkj.fcp.core.logger.AcpLogger;
 import com.dfkj.fcp.core.util.FormatUtil;
-import com.dfkj.fcp.core.vo.ControllerMessage;
-import com.dfkj.fcp.core.vo.ControllerMessageItem;
-import com.dfkj.fcp.core.vo.DataMessage;
 import com.dfkj.fcp.core.vo.Message;
 import com.dfkj.fcp.protocol.hardware.factory.HardwareInstanceFactory;
-import com.dfkj.fcp.protocol.platform.factory.PlatformInstanceFactory;
 
 /**
  * Mina硬件服务端处理器
