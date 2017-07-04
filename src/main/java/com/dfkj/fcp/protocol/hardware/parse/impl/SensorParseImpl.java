@@ -32,7 +32,8 @@ public class SensorParseImpl implements IParseGtw1P1 {
 		message.setCurrentValue(content.getShortAt(0));
 		content.removeAt(0,2);
 		//解析电池电压
-		message.setIsAlarm(content.getAt(0)&0xFF);
+		float voltage = content.getAt(0)&0xFF;
+		message.setVoltage(voltage / 10);
 		content.removeAt(0,1);
         logger.debug("SensorParseImpl:\n" + message);        
 		return message;

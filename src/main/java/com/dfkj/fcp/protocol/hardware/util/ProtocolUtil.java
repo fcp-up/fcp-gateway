@@ -29,7 +29,7 @@ public class ProtocolUtil {
 				break;
 			}
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
-			// CRC校验		
+			//CRC校验		
 			//去掉校验码			
 			byteArray.removeAt(byteArray.size() -2 , 2); 		    		
 		    message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));				
@@ -37,13 +37,8 @@ public class ProtocolUtil {
 		    String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
 		    message.setCenterNo(centerNoStr);		    
 			// 消息类型
-		    short messsageFlag = byteArray.getShortAt(15);
-		    if(messsageFlag == 0){
-		    	messsageFlag = 1;//网关握手信号
-		    }else {
-		    	messsageFlag = 2;//传感器数据
-		    }
-			message.setMsgType(EMessageTypeFactory(messsageFlag));	
+		    byte messsageFlag = byteArray.getAt(14);
+		    message.setMsgType(EMessageTypeFactory(messsageFlag));	
 			byteArray.removeAt(0, 12);
 			//获取消息长度
 			short messageLength = byteArray.getShortAt(0);
@@ -78,7 +73,7 @@ public class ProtocolUtil {
 	}
 
 	public static EMessageType EMessageTypeFactory(short msgId) {
-		int value = (int)(msgId & 0xFFFF);		
+		int value = (int)(msgId & 0xFF);		
 		EMessageType tp = null;
 		switch (value) {
 			case 0x00:

@@ -19,7 +19,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
 
     public void messageReceived(IoSession session, Object message) throws Exception {
 
-        logger.debug("HardwareServerHandler.messageReceived:" + message.getClass().toString() + " " + FormatUtil.DATE_FORMAT.format(new Date()));
+       // logger.debug("HardwareServerHandler.messageReceived:" + message.getClass().toString() + " " + FormatUtil.DATE_FORMAT.format(new Date()));
 
        /* if (message instanceof DataMessage) {
             DataMessage dataMessage = (DataMessage) message;

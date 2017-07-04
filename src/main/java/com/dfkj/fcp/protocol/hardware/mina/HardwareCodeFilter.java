@@ -62,40 +62,37 @@ public class HardwareCodeFilter extends IoFilterAdapter {
      *
      */
     private class Gtw1P1Decode {
-
         public Message decode(IoSession session, Object data) {
             if (!(data instanceof ByteArray)) {
                 return null;
             }
             ByteArray byteArray = (ByteArray)data;
+            byte[] response = new byte[]{(byte)0xFE,(byte)0xFE,(byte)0xFE};
             logger.debug("Gtw1P1Decode decode");
             logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             logger.debug("server收到的包:\n" + HexUtil.ByteToString(byteArray.toBytes(), " "));
             logger.info("收到的包:"+HexUtil.ByteToString(byteArray.toBytes(), " "));
-            //	解包
+            //如果是心跳包或握手包则立即回应
+            if((byteArray.getAt(0) == (byte)0xAA) && 
+            	(byteArray.getAt(1) == (byte)0xAA)&&
+            	(byteArray.getAt(2) == (byte)0xAA)){
+              session.write(response); 
+              return null;
+            }
+            //解包            
             Message message = ProtocolUtil.unpack(byteArray);
             if (message == null) {
                 logger.debug("解包失败.");
                 return null;
             }
             logger.debug("Message server :" + message.toString());
-            //	TODO 处理分包
-            //	解析数据
+            //TODO 处理分包
+            //解析数据
             message = ProtocolUtil.parse(message, byteArray);
-            /**
-             * 应答标志位：为应答的则不需要进一步处理
-             * TODO 消息的回复需移到到handler中
-             * TODO 消息的过滤需移到单独的filter中
-             */
-            /*if (message.getAck() < 0) {
-                //	回应数据包
-                UniversalResponseMessage responseMessage = UniversalResponseMessage.create(message, EUniversalResponseCode.OK);
-                session.write(responseMessage);
-                return message;
-            }*/
-            return null;
+            //回应数据包               
+            session.write(response);
+            return message;           
         }
-
     }
 
     /**
