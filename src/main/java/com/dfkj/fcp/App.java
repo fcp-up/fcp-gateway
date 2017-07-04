@@ -3,7 +3,7 @@ package com.dfkj.fcp;
 import com.dfkj.fcp.config.SystemConfig;
 import com.dfkj.fcp.core.logger.AcpLogger;
 import com.dfkj.fcp.protocol.hardware.factory.HardwareInstanceFactory;
-import com.dfkj.fcp.protocol.platform.task.PlatformConnectionRunnable;
+
 /**
  * 程序主入口
  */
