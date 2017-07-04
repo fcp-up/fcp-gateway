@@ -72,18 +72,14 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             logger.debug("server收到的包:\n" + HexUtil.ByteToString(byteArray.toBytes(), " "));
             logger.info("收到的包:"+HexUtil.ByteToString(byteArray.toBytes(), " "));
-
             //	解包
             Message message = ProtocolUtil.unpack(byteArray);
             if (message == null) {
                 logger.debug("解包失败.");
                 return null;
             }
-
             logger.debug("Message server :" + message.toString());
-
             //	TODO 处理分包
-
             //	解析数据
             message = ProtocolUtil.parse(message, byteArray);
             /**
@@ -97,7 +93,6 @@ public class HardwareCodeFilter extends IoFilterAdapter {
                 session.write(responseMessage);
                 return message;
             }*/
-
             return null;
         }
 

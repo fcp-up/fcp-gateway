@@ -24,7 +24,7 @@ public class ProtocolUtil {
 	public static Message unpack(ByteArray byteArray) {
 		Message message = null;
 		do {
-			if (isNotData(byteArray)||isNotHeartBeat(byteArray)) {
+			if (isNotData(byteArray)&&isNotHeartBeat(byteArray)) {
 				logger.debug("无效的数据包.");
 				break;
 			}
@@ -37,22 +37,29 @@ public class ProtocolUtil {
 		    String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
 		    message.setCenterNo(centerNoStr);		    
 			// 消息类型
-			message.setMsgType(EMessageTypeFactory(byteArray.getShortAt(15)));	
+		    short messsageFlag = byteArray.getShortAt(15);
+		    if(messsageFlag == 0){
+		    	messsageFlag = 1;//网关握手信号
+		    }else {
+		    	messsageFlag = 2;//传感器数据
+		    }
+			message.setMsgType(EMessageTypeFactory(messsageFlag));	
 			byteArray.removeAt(0, 12);
 			//获取消息长度
 			short messageLength = byteArray.getShortAt(0);
 			byteArray.removeAt(0, 2);
 			// 消息时间
 			message.setRecvMsgDate(new Date());
-			// 设备类别
+			//设备类别
 			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));
+			byteArray.removeAt(0, 1);
+			//解析传感器数据
 		} while (false);
 
 		return message;
 	}
 
-	public static ByteArray pack(Message message) {
-		
+	public static ByteArray pack(Message message) {		
 		ByteArray byteArray = null;		
 		return byteArray;
 	}
@@ -64,17 +71,14 @@ public class ProtocolUtil {
 		if (message.getDevCategory() == EDeviceCategory.SENSOR) {
 			parse = new SensorParseImpl();
 		}
-
 		if (parse != null) {
 			retMessage = parse.parse(retMessage, content);
 		}
-
 		return retMessage;
 	}
 
 	public static EMessageType EMessageTypeFactory(short msgId) {
-		int value = (int)(msgId & 0xFFFF);
-		
+		int value = (int)(msgId & 0xFFFF);		
 		EMessageType tp = null;
 		switch (value) {
 			case 0x00:
@@ -97,14 +101,12 @@ public class ProtocolUtil {
 	 * @return
 	 */
 	public static EDeviceCategory EDeviceCategoryFactory(EMessageType msgType) {
-		EDeviceCategory category = EDeviceCategory.COMMON;
+		EDeviceCategory category = EDeviceCategory.UNKNOWN;		
 		if (msgType == EMessageType.HELLO) {
 			category = EDeviceCategory.GATEWAY;
 		} else if (msgType == EMessageType.SENSOR_DATA) {
 			category = EDeviceCategory.SENSOR;
-		} else if (msgType == EMessageType.CTRL_REPORT_STATUS) {
-			category = EDeviceCategory.CONTROLLER;
-		} else if (msgType == EMessageType.GATEWAY_HEARTBEAT) {
+		} else if (msgType == EMessageType.HEARTBEAT) {
 			category = EDeviceCategory.GATEWAY;
 		}
 		return category;

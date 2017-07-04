@@ -13,27 +13,15 @@ import com.dfkj.fcp.protocol.hardware.parse.IParseGtw1P1;
  * @author Administrator
  *
  */
-public class SensorParseImpl implements IParseGtw1P1 {
+public class GatewayParseImpl implements IParseGtw1P1 {
 	
-	private final static AcpLogger logger = new AcpLogger(SensorParseImpl.class);
+	private final static AcpLogger logger = new AcpLogger(GatewayParseImpl.class);
 	public Message parse(Message message, ByteArray content) {
 		if (message.getMsgType() != EMessageType.SENSOR_DATA) {
 			logger.debug("传感器设备，暂只支持数据消息.");
 			return message;
-		}		
-		//解析传感器数据	
-		//解析设备ID
-		message.setDeviceId(content.getShortAt(0));
-		content.removeAt(0,2);
-		//解析报警标识
-		message.setIsAlarm(content.getAt(0)&0x0F);
-		content.removeAt(0,1);
-		//解析报警数值
-		message.setCurrentValue(content.getShortAt(0));
-		content.removeAt(0,2);
-		//解析电池电压
-		message.setIsAlarm(content.getAt(0)&0xFF);
-		content.removeAt(0,1);
+		}
+		//解析传感器数据		
         logger.debug("SensorParseImpl:\n" + message);        
 		return message;
 	}
