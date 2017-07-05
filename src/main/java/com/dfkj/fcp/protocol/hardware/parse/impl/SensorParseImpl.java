@@ -35,7 +35,7 @@ public class SensorParseImpl implements IParseGtw1P1 {
 		float voltage = content.getAt(0)&0xFF;
 		message.setVoltage(voltage / 10);
 		content.removeAt(0,1);
-        logger.debug("SensorParseImpl:\n" + message);        
+        logger.debug("GatewayParseImpl:\n" + message);        
 		return message;
 	}
 
