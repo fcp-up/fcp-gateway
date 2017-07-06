@@ -1,7 +1,5 @@
 package com.dfkj.fcp.protocol.hardware.mina;
 
-
-
 import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.future.DefaultWriteFuture;
 import org.apache.mina.core.future.WriteFuture;
@@ -89,7 +87,10 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             //TODO 处理分包
             //解析数据
             message = ProtocolUtil.parse(message, byteArray);
-            //回应数据包               
+            //回应数据包       
+            System.out.println("====dsjakddddddlljkdskdsjkas");
+            System.out.println(message.getCenterNo() + "-" + Long.toString(session.getId()));
+            System.out.println("dsjakddddddlljkdskdsjkas======");
             session.write(response);
             return message;           
         }
