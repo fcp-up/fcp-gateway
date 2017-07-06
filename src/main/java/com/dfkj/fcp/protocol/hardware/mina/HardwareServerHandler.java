@@ -14,24 +14,31 @@ public class HardwareServerHandler extends IoHandlerAdapter {
 
     private final static AcpLogger logger = new AcpLogger(HardwareServerHandler.class);
 
-    public void messageReceived(IoSession session, Object message) throws Exception {    	
-    	//存储数据
-    	String requestURL = AccessUtils.ALARM_SERVICE;
-    	String onlineURL = AccessUtils.ONLINE_SERVICE;
-    	Message msg = (Message)message;
-    	JSONObject reqJsonParam = new JSONObject();
-		JSONObject resJsonParam  = new JSONObject();  
-    	if(msg.getMsgType() == EMessageType.HELLO){
-    		requestURL = AccessUtils.ONLINE_SERVICE;
-    		reqJsonParam.put("devId", msg.getDeviceId());
-    		reqJsonParam.put("online", 1);
-    		resJsonParam = HttpRequestUtils.httpPost(requestURL,(JSONObject)reqJsonParam);
-    	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
-    		requestURL = AccessUtils.ALARM_SERVICE;
-    		reqJsonParam.put("devId", msg.getDeviceId());
-    		reqJsonParam.put("isAlarm", msg.getIsAlarm());
-        	reqJsonParam.put("pressure", msg.getVoltage());         	 
-        	resJsonParam = HttpRequestUtils.httpPost(requestURL,(JSONObject)reqJsonParam);
+    public void messageReceived(IoSession session, Object message) throws Exception {   
+    	try{
+    		//存储数据
+        	String requestURL = AccessUtils.ALARM_SERVICE;
+        	String onlineURL = AccessUtils.ONLINE_SERVICE;
+        	Message msg = (Message)message;
+        	JSONObject reqJsonParam = new JSONObject();
+    		JSONObject resJsonParam  = new JSONObject();  
+        	if(msg.getMsgType() == EMessageType.HELLO){
+        		requestURL = AccessUtils.ONLINE_SERVICE;
+        		reqJsonParam.put("devId", msg.getDeviceId());
+        		reqJsonParam.put("online", 1);
+        		resJsonParam = HttpRequestUtils.httpPost(requestURL,(JSONObject)reqJsonParam);
+        	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
+        		requestURL = AccessUtils.ALARM_SERVICE;
+        		reqJsonParam.put("devId", msg.getDeviceId());
+        		reqJsonParam.put("isAlarm", msg.getIsAlarm());
+            	reqJsonParam.put("pressure", msg.getVoltage());         	 
+            	resJsonParam = HttpRequestUtils.httpPost(requestURL,(JSONObject)reqJsonParam);
+        	}    		
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		logger.info("业务处理失败.");
+    	}finally{
+    		//消息缓存处理
     	}
     }
 }
