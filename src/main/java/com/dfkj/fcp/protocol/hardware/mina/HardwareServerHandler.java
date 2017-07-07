@@ -14,7 +14,12 @@ public class HardwareServerHandler extends IoHandlerAdapter {
 
     private final static AcpLogger logger = new AcpLogger(HardwareServerHandler.class);
 
-    public void messageReceived(IoSession session, Object message) throws Exception {   
+    public void messageReceived(IoSession session, Object message) throws Exception {  
+    	
+    	if(!(message instanceof Message)){
+    		return ;
+    	}
+    	
     	try{
     		//存储数据
         	String requestURL = AccessUtils.ALARM_SERVICE;
