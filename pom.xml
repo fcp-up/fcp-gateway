@@ -94,14 +94,9 @@
     		<classifier>jdk15</classifier>    
 		</dependency>  
 		<dependency>
-    		<groupId>commons-httpclient</groupId>
-   			<artifactId>commons-httpclient</artifactId>
-    		<version>3.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
    			<artifactId>httpclient</artifactId>			
-		</dependency>
+		</dependency>		
 	</dependencies>
 	<build>
 		<plugins>

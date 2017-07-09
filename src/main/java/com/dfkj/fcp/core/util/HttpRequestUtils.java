@@ -1,23 +1,38 @@
 package com.dfkj.fcp.core.util;
 
-import net.sf.json.JSONObject;
-import org.apache.commons.httpclient.HttpStatus;
+
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
-import java.io.IOException;
-import java.net.URLDecoder;
+
+import net.sf.json.JSONObject;
  
 @SuppressWarnings("deprecation")
 public class HttpRequestUtils {
 	
     private static Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);    //日志记录
+    
+    public static List<NameValuePair> getParams(Map<String,String> map){
+    	List<NameValuePair> params = new ArrayList<NameValuePair>();
+		for(Map.Entry<String, String> e: map.entrySet()) {
+			params.add(new BasicNameValuePair(e.getKey(), e.getValue()));
+		}
+		return params;
+    }
  
     /**
      * httpPost
@@ -25,8 +40,8 @@ public class HttpRequestUtils {
      * @param jsonParam 参数
      * @return
      */
-    public static JSONObject httpPost(String url,JSONObject jsonParam){
-        return httpPost(url, jsonParam, false);
+    public static JSONObject httpPost(String url,Map<String,String>paramMap){
+        return httpPost(url, paramMap, false);
     }
  
     /**
@@ -36,18 +51,15 @@ public class HttpRequestUtils {
      * @param noNeedResponse    不需要返回结果
      * @return
      */
-    public static JSONObject httpPost(String url,JSONObject jsonParam, boolean noNeedResponse){
+    public static JSONObject httpPost(String url,Map<String,String>paramMap, boolean noNeedResponse){
         //post请求返回结果
         DefaultHttpClient httpClient = new DefaultHttpClient();
         JSONObject jsonResult = null;
         HttpPost method = new HttpPost(url);
         try {
-            if (null != jsonParam) {
-                //解决中文乱码问题
-                StringEntity entity = new StringEntity(jsonParam.toString(), "utf-8");
-                entity.setContentEncoding("UTF-8");
-                entity.setContentType("application/json");
-                method.setEntity(entity);
+            if (null != paramMap) {
+            	UrlEncodedFormEntity entity = new UrlEncodedFormEntity( getParams(paramMap), "UTF-8");
+            	method.setEntity(entity);  
             }
             HttpResponse result = httpClient.execute(method);
             url = URLDecoder.decode(url, "UTF-8");
@@ -70,8 +82,7 @@ public class HttpRequestUtils {
             logger.error("post请求提交失败:" + url, e);
         }
         return jsonResult;
-    }
- 
+    } 
  
     /**
      * 发送get请求
