@@ -14,12 +14,14 @@ import java.util.Date;
 public class Message implements Cloneable,Serializable {
 	
 	protected String centerNo; //集中器ID
+	protected int centerSignal;//集中器信号强度
 	protected int deviceId; //设备ID
+	protected int deviceSignal;//节点信号强度
 	protected EDeviceCategory devCategory; // 设备类别
 	protected int isAlarm; //是否报警
 	protected float currentValue;//当前值
 	protected float voltage;//电池电压
-	protected String orgData;
+	protected String orgData;//数据体
 	protected Date recvMsgDate; // 收到message时的时间
 	protected EMessageType msgType; // 消息类型
 	
@@ -29,16 +31,32 @@ public class Message implements Cloneable,Serializable {
 	
 	public void setCenterNo(String centerNo) {
 		this.centerNo = centerNo;
-	}
+	}	
 	
+	public int getCenterSignal() {
+		return centerSignal;
+	}
+
+	public void setCenterSignal(int centerSignal) {
+		this.centerSignal = centerSignal;
+	}
+
 	public int getDeviceId() {
 		return deviceId;
 	}
 	
 	public void setDeviceId(int deviceId) {
 		this.deviceId = deviceId;
-	}
+	}	
 	
+	public int getDeviceSignal() {
+		return deviceSignal;
+	}
+
+	public void setDeviceSignal(int deviceSignal) {
+		this.deviceSignal = deviceSignal;
+	}
+
 	public EDeviceCategory getDevCategory() {
 		return devCategory;
 	}

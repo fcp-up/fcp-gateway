@@ -6,6 +6,7 @@ import com.dfkj.fcp.core.constant.EDeviceCategory;
 import com.dfkj.fcp.core.constant.EMessageType;
 import com.dfkj.fcp.core.logger.AcpLogger;
 import com.dfkj.fcp.core.util.ByteArray;
+import com.dfkj.fcp.core.util.CRC16;
 import com.dfkj.fcp.core.util.HexUtil;
 import com.dfkj.fcp.core.vo.Message;
 import com.dfkj.fcp.protocol.hardware.parse.IParseGtw1P1;
@@ -29,25 +30,37 @@ public class ProtocolUtil {
 				break;
 			}
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
-			//CRC校验		
+			//CRC校验	
+			int crc = (int)CRC16.calcCrc16(byteArray.subByteArray(byteArray,6,14));
+			int currentCRC = (int)byteArray.getShortAt(15);
+			if(crc != currentCRC){
+				logger.debug("数据包效验失败.");
+				break;
+			}
 			//去掉校验码			
 			byteArray.removeAt(byteArray.size() -2 , 2); 		    		
 		    message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));				
 			//集中器地址
-		    String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
-		    message.setCenterNo(centerNoStr);		    
-			// 消息类型
-		    byte messsageFlag = byteArray.getAt(14);
-		    message.setMsgType(EMessageTypeFactory(messsageFlag));	
-			byteArray.removeAt(0, 12);
+		    //String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
+		    int preCenterNo = (int)byteArray.getLongAt(0);
+		    byteArray.removeAt(0,2);
+		    int suffixCenterNo = (int)byteArray.getLongAt(0);		    
+		    byteArray.removeAt(0,2);
+		    String centerNoStr = autoNoStr(preCenterNo,5) + autoNoStr( suffixCenterNo,5);
+		    message.setCenterNo(centerNoStr);			    
 			//获取消息长度
-			short messageLength = byteArray.getShortAt(0);
+			short msgLen = byteArray.getShortAt(0);
 			byteArray.removeAt(0, 2);
-			// 消息时间
+			//集中器信号强度
+		    short centerSignal = byteArray.getShortAt(0);
+		    message.setCenterSignal(centerSignal);
+			//消息类型
+		    byte msgFlag = byteArray.getAt(1);
+		    message.setMsgType(EMessageTypeFactory(msgFlag));				
+			//消息时间
 			message.setRecvMsgDate(new Date());
 			//设备类别
-			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));
-			byteArray.removeAt(0, 1);
+			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));			
 			//解析传感器数据
 		} while (false);
 
@@ -140,4 +153,15 @@ public class ProtocolUtil {
 		}
 		return flag;
 	}
+	
+	/**
+     * 不够位数的在前面补0，保留num的长度位数字
+     * @param code
+     * @return
+     */
+    private static String autoNoStr(int code, int num) {
+        String result = "";
+        result = String.format("%0" + num + "d", code);
+        return result;
+    }
 }

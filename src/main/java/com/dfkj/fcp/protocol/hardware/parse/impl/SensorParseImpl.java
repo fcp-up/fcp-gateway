@@ -25,6 +25,9 @@ public class SensorParseImpl implements IParseGtw1P1 {
 		//解析设备ID
 		message.setDeviceId(content.getShortAt(0));
 		content.removeAt(0,2);
+		//解析节点信号强度
+		message.setDeviceSignal(content.getShortAt(0));
+		content.removeAt(0);
 		//解析报警标识
 		message.setIsAlarm(content.getAt(0)&0x0F);
 		content.removeAt(0,1);
