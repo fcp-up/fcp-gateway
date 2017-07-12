@@ -32,7 +32,9 @@ public class ProtocolUtil {
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
 			//CRC校验	
 			int crc = (int)CRC16.calcCrc16(byteArray.subByteArray(byteArray,6,14));
-			int currentCRC = (int)byteArray.getShortAt(15);
+			System.out.println(crc);
+			int currentCRC = byteArray.getAt(15)&0x00FF | byteArray.getAt(16) << 8 & 0xFF00;
+			System.out.println(currentCRC);
 			if(crc != currentCRC){
 				logger.debug("数据包效验失败.");
 				break;
@@ -42,9 +44,9 @@ public class ProtocolUtil {
 		    message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));				
 			//集中器地址
 		    //String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
-		    int preCenterNo = (int)byteArray.getLongAt(0);
+		    int preCenterNo = byteArray.getAt(0) & 0x00FF | byteArray.getAt(1) << 8 & 0xFF00;
 		    byteArray.removeAt(0,2);
-		    int suffixCenterNo = (int)byteArray.getLongAt(0);		    
+		    int suffixCenterNo = byteArray.getAt(0) & 0x00FF | byteArray.getAt(1) << 8 & 0xFF00;;		    
 		    byteArray.removeAt(0,2);
 		    String centerNoStr = autoNoStr(preCenterNo,5) + autoNoStr( suffixCenterNo,5);
 		    message.setCenterNo(centerNoStr);			    
@@ -52,7 +54,7 @@ public class ProtocolUtil {
 			short msgLen = byteArray.getShortAt(0);
 			byteArray.removeAt(0, 2);
 			//集中器信号强度
-		    short centerSignal = byteArray.getShortAt(0);
+		    short centerSignal = byteArray.getAt(0);
 		    message.setCenterSignal(centerSignal);
 			//消息类型
 		    byte msgFlag = byteArray.getAt(1);

@@ -146,10 +146,10 @@ public class Message implements Cloneable,Serializable {
 	
 	@Override
 	public String toString() {
-		return String.format("集中器编号:%s 设备类别:%s 消息类型:%s 接收时间:%s 设备ID:%d 是否报警:%d 当前数值:%.1f 当前电压:%.1f", 
-				this.centerNo,this.devCategory, this.msgType, 
+		return String.format("集中器编号:%s 集中器信号强度:%d 设备类别:%s 消息类型:%s 接收时间:%s 设备ID:%d 节点信号强度:%d 是否报警:%d 当前数值:%.1f 当前电压:%.1f", 
+				this.centerNo,this.centerSignal,this.devCategory, this.msgType, 
 				recvMsgDate == null ? "?" : FormatUtil.DATE_FORMAT.format(recvMsgDate),
-							this.deviceId,this.isAlarm,this.currentValue,this.voltage);
+							this.deviceId,this.deviceSignal,this.isAlarm,this.currentValue,this.voltage);
 	}
 	
 

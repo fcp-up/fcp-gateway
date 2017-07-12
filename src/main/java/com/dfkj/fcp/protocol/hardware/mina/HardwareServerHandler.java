@@ -33,11 +33,13 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         		requestURL = AccessUtils.ONLINE_SERVICE;
         		messageObj.put("terminalNo", msg.getDeviceId());
         		messageObj.put("state", 1);
+        		messageObj.put("terminalSignal", msg.getCenterSignal());
         	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
         		requestURL = AccessUtils.ALARM_SERVICE;        		
         		messageObj.put("deviceNo", msg.getDeviceId());
         		messageObj.put("isAlarm", msg.getIsAlarm());
         		messageObj.put("pressure", msg.getVoltage()); 
+        		messageObj.put("deviceSignal", msg.getDeviceSignal());
   		     }  
         	messageList.add(messageObj);  
     		Map<String,String> reqJsonParam = new HashMap<>();
