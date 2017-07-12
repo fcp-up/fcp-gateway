@@ -4,7 +4,7 @@ public class AccessUtils {
 	/**
 	 * 报警服务IP
 	 */
-	public static final String ALARM_SERVICE_HOST = "127.0.0.1";
+	public static final String ALARM_SERVICE_HOST = "192.168.43.69";
 	
 	/**
 	 * 报警服务端口
@@ -15,11 +15,11 @@ public class AccessUtils {
 	/**
 	 * 报警服务请求地址
 	 */
-	public static final String ALARM_SERVICE = String.format("http://%s:%d/terminal/requestAlarm/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
+	public static final String ALARM_SERVICE = String.format("http://%s:%d/fcp/terminal/requestAlarm/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
 
 	
 	/**
 	 * 终端上线请求地址
 	 */
-	public static final String ONLINE_SERVICE = String.format("http://%s:%d/terminal/postOnline/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
+	public static final String ONLINE_SERVICE = String.format("http://%s:%d/fcp/terminal/postOnline/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
 }
