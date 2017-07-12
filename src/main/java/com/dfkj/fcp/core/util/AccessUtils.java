@@ -4,7 +4,7 @@ public class AccessUtils {
 	/**
 	 * 报警服务IP
 	 */
-	public static final String ALARM_SERVICE_HOST = "192.168.43.69";
+	public static final String ALARM_SERVICE_HOST = "127.0.0.1";
 	
 	/**
 	 * 报警服务端口
