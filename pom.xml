@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.gstar.acp</groupId>
+	<groupId>com.dfkj.fcp</groupId>
 	<artifactId>fcp-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>frontEndInteractive</name>
+	<name>fcp-gateway</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
@@ -47,7 +47,7 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-slf4j-impl</artifactId>
 			<version>2.5</version>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>org.apache.mina</groupId>
 			<artifactId>mina-core</artifactId>
@@ -99,7 +99,8 @@
 		</dependency>		
 	</dependencies>
 	<build>
-		<plugins>
+		<finalName>fcp-gateway</finalName>		    
+		<plugins>	
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -127,8 +128,8 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-		</plugins>
+			</plugin>			
+		</plugins>		
 	</build>
 
 </project>

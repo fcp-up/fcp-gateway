@@ -1,6 +1,7 @@
 package com.dfkj.fcp.config;
 
 import java.io.*;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Properties;
@@ -91,13 +92,18 @@ public class SystemConfig {
         try {
             if(null == filename || "".equals(filename)){
                 String codeSourcePath = SystemConfig.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-                codeSourcePath = URLDecoder.decode(codeSourcePath, Charset.defaultCharset().displayName());
+            	codeSourcePath = URLDecoder.decode(codeSourcePath, Charset.defaultCharset().displayName());
                 filename = codeSourcePath + DEFAULT_FILE;
+            	//System.out.println(System.getProperty("user.dir") + "\\"+DEFAULT_FILE);
+            	InputStream ips = SystemConfig.class.getResourceAsStream("/application.properties");
+            	BufferedReader ipss = new BufferedReader(new InputStreamReader(ips));
+            	props.load(ipss);
             }
 
-            File file = new File(filename);
+            /*File file = new File(filename);
+            System.out.println(file.exists());
             in = new BufferedInputStream(new FileInputStream(file.getPath()));
-            props.load(in);
+            props.load(in);*/
 
         } catch (FileNotFoundException e) {
             logger.error("属性文件没找到文件未找到");
