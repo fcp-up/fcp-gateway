@@ -330,7 +330,7 @@ public final class ByteArray {
 	public final byte[] subByteArray(ByteArray bytes,int index1,int index2){
 		byte[] b = new byte[9];
 		int i = 0;
-		while(index1 < index2){
+		while(index1 <= index2){
 			b[i] = bytes.getAt(index1);	
 			index1 += 1;
 			i += 1;			

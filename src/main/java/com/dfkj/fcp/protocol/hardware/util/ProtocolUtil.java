@@ -56,13 +56,15 @@ public class ProtocolUtil {
 			//集中器信号强度
 		    short centerSignal = byteArray.getAt(0);
 		    message.setCenterSignal(centerSignal);
+		    byteArray.removeAt(0);
 			//消息类型
-		    byte msgFlag = byteArray.getAt(1);
+		    byte msgFlag = byteArray.getAt(0);
 		    message.setMsgType(EMessageTypeFactory(msgFlag));				
 			//消息时间
 			message.setRecvMsgDate(new Date());
 			//设备类别
-			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));			
+			message.setDevCategory(EDeviceCategoryFactory(message.getMsgType()));	
+			byteArray.removeAt(0);
 			//解析传感器数据
 		} while (false);
 
