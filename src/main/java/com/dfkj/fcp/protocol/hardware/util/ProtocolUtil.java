@@ -143,8 +143,8 @@ public class ProtocolUtil {
 	 */
 	public static boolean  isNotData(ByteArray content){
 		boolean flag = true;
-		if((content.getBeginByte() == 0x7E 
-				|| content.getLastByte() == 0x7E)){
+		if(content.getBeginByte() == 0x7E 
+				&& content.getLastByte() == 0x7E){
 			flag = false;
 		}
 		return flag;
