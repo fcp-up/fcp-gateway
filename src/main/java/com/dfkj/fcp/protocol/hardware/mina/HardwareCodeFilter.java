@@ -63,8 +63,9 @@ public class HardwareCodeFilter extends IoFilterAdapter {
         public Message decode(IoSession session, Object data) {
             if (!(data instanceof ByteArray)) {
                 return null;
-            }
-            ByteArray byteArray = (ByteArray)data;
+            }   
+            ByteArray tmpByteArray = dropPack((ByteArray)data);
+            ByteArray byteArray =  tmpByteArray;//未考虑后续还有粘包的情况
             byte[] response = new byte[]{(byte)0xFE,(byte)0xFE,(byte)0xFE};
             logger.debug("Gtw1P1Decode decode");
             logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
@@ -75,7 +76,6 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             	(byteArray.getAt(1) == (byte)0xAA)&&
             	(byteArray.getAt(2) == (byte)0xAA)){
               session.write(response); 
-              return null;
             }
             //解包            
             Message message = ProtocolUtil.unpack(byteArray);
@@ -115,4 +115,17 @@ public class HardwareCodeFilter extends IoFilterAdapter {
         }
 
     }
+    
+    private ByteArray dropPack(ByteArray bytes){
+		int i = bytes.size();
+		while(i>0){
+		  if(bytes.getBeginByte() != 0x7E && bytes.getAt(18) != 0x7E){
+			  bytes.removeAt(0);
+			  i -= 1;
+		  }else{
+			  i = 0;
+		  }
+	   }
+       return bytes;
+	}
 }

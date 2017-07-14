@@ -24,7 +24,7 @@ public class ProtocolUtil {
 	 */
 	public static Message unpack(ByteArray byteArray) {
 		Message message = null;
-		do {
+		do {			
 			if (isNotData(byteArray)&&isNotHeartBeat(byteArray)) {
 				logger.debug("无效的数据包.");
 				break;

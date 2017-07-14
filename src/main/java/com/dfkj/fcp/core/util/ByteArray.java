@@ -336,5 +336,6 @@ public final class ByteArray {
 			i += 1;			
 		}
 		return b;
-	}
+	}	
+	
 }
