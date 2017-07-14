@@ -119,7 +119,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
     private ByteArray dropPack(ByteArray bytes){
 		int i = bytes.size();
 		while(i>3){		  
-		  if(bytes.getBeginByte() != 0x7E && bytes.getAt(18) != 0x7E && bytes.size() >= 18){
+		  if(bytes.getBeginByte() != 0x7E && bytes.getAt(18) != 0x7E && bytes.size() > 18){
 			  bytes.removeAt(0);
 			  i -= 1;
 		  }else{
