@@ -44,9 +44,9 @@ public class ProtocolUtil {
 		    message = new Message(HexUtil.ByteToString(byteArray.toBytes(), " "));				
 			//集中器地址
 		    //String centerNoStr = new String(HexUtil.getChars(byteArray.subByteArray(byteArray,0,12)));	
-		    int preCenterNo = byteArray.getAt(0) & 0x00FF | byteArray.getAt(1) << 8 & 0xFF00;
+		    int preCenterNo = byteArray.getAt(0) << 8 & 0xFF00 | byteArray.getAt(1) & 0x00FF;
 		    byteArray.removeAt(0,2);
-		    int suffixCenterNo = byteArray.getAt(0) & 0x00FF | byteArray.getAt(1) << 8 & 0xFF00;;		    
+		    int suffixCenterNo = byteArray.getAt(0) << 8 & 0xFF00 | byteArray.getAt(1) & 0x00FF;		    
 		    byteArray.removeAt(0,2);
 		    String centerNoStr = autoNoStr(preCenterNo,5) + autoNoStr( suffixCenterNo,5);
 		    message.setCenterNo(centerNoStr);			    
