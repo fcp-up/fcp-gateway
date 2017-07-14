@@ -23,7 +23,7 @@ public class SensorParseImpl implements IParseGtw1P1 {
 		}		
 		//解析传感器数据	
 		//解析设备ID
-		message.setDeviceId(content.getShortAt(0));
+		message.setDeviceId(content.getAt(0)<<8 & 0xFF00 + content.getAt(1) & 0x00FF);		
 		content.removeAt(0,2);
 		//解析节点信号强度
 		message.setDeviceSignal(content.getAt(0)&0x0F);
@@ -32,7 +32,7 @@ public class SensorParseImpl implements IParseGtw1P1 {
 		message.setIsAlarm(content.getAt(0)&0x0F);
 		content.removeAt(0,1);
 		//解析报警数值
-		message.setCurrentValue(content.getShortAt(0));
+		message.setCurrentValue(content.getAt(0)<<8 & 0xFF00 + content.getAt(1) & 0x00FF);
 		content.removeAt(0,2);
 		//解析电池电压
 		float voltage = content.getAt(0)&0xFF;

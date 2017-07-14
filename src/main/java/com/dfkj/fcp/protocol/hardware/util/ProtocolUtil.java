@@ -25,10 +25,10 @@ public class ProtocolUtil {
 	public static Message unpack(ByteArray byteArray) {
 		Message message = null;
 		do {			
-			if (isNotData(byteArray)&&isNotHeartBeat(byteArray)) {
+			/*if (isNotData(byteArray)&&isNotHeartBeat(byteArray)) {
 				logger.debug("无效的数据包.");
 				break;
-			}
+			}*/
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
 			//CRC校验	
 			int crc = (int)CRC16.calcCrc16(byteArray.subByteArray(byteArray,6,14));
@@ -151,8 +151,8 @@ public class ProtocolUtil {
 	}	
 	
 	public static boolean isNotHeartBeat(ByteArray content){
-		boolean flag = true;
-		if(content.getLongAt(0) == 0){
+		boolean flag = true;		
+		if(content.getAt(0)==0xAA && content.getAt(1)==0xAA && content.getAt(2) == 0xAA){
 			flag = false;
 		}
 		return flag;

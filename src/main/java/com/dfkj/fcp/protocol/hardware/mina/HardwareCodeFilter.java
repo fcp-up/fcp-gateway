@@ -76,6 +76,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             	(byteArray.getAt(1) == (byte)0xAA)&&
             	(byteArray.getAt(2) == (byte)0xAA)){
               session.write(response); 
+              return null;
             }
             //解包            
             Message message = ProtocolUtil.unpack(byteArray);
