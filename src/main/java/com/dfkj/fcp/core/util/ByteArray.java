@@ -38,6 +38,22 @@ public final class ByteArray {
 			}
 		} while (false);
 	}
+	
+	public ByteArray(byte[] bytes, int start, int end) {
+		do {
+			if (bytes == null || bytes.length < start 
+					 || end < start)
+				break;
+			listOfByte = new ArrayList<Byte>(end-start);
+			for (int idx = start; idx < end ; idx++) {
+				if(listOfByte.size() < idx){
+					listOfByte.add((byte)0);
+				}else{
+					listOfByte.add(bytes[idx]);
+				}	
+			}
+		} while (false);
+	}
 
 	public ByteArray(int length, byte initValue) {
 		listOfByte = new ArrayList<Byte>();
@@ -328,7 +344,7 @@ public final class ByteArray {
 	}
 	
 	public final byte[] subByteArray(ByteArray bytes,int index1,int index2){
-		byte[] b = new byte[9];
+		byte[] b = new byte[index2-index1+1];
 		int i = 0;
 		while(index1 <= index2){
 			b[i] = bytes.getAt(index1);	

@@ -1,5 +1,8 @@
 package com.dfkj.fcp.protocol.hardware.mina;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.mina.core.filterchain.IoFilterAdapter;
 import org.apache.mina.core.future.DefaultWriteFuture;
 import org.apache.mina.core.future.WriteFuture;
@@ -24,6 +27,9 @@ public class HardwareCodeFilter extends IoFilterAdapter {
 
     private Gtw1P1Decode decode = null;
     private Gtw1P1Encode encode = null;
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	List<Message> listMsg = new ArrayList();
 
     public HardwareCodeFilter() {
         decode = new Gtw1P1Decode();
@@ -33,7 +39,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
     @Override
     public void messageReceived(NextFilter nextFilter, IoSession session, Object message) throws Exception {
         if (message instanceof byte[]) {
-            Message msg = decode.decode(session, new ByteArray((byte[])message));
+        	List<Message> msg = decode.decode(session, new ByteArray((byte[])message));
             nextFilter.messageReceived(session, msg);
         }else{
             super.messageReceived(nextFilter, session, message);
@@ -60,44 +66,50 @@ public class HardwareCodeFilter extends IoFilterAdapter {
      *
      */
     private class Gtw1P1Decode {
-        public Message decode(IoSession session, Object data) {
+    	//应答帧为 FE FE FE
+    	byte[] response = new byte[]{(byte)0xFE,(byte)0xFE,(byte)0xFE};
+        public List<Message> decode(IoSession session, Object data) {
             if (!(data instanceof ByteArray)) {
                 return null;
-            }   
-            ByteArray tmpByteArray = dropPack((ByteArray)data);
-            ByteArray byteArray =  tmpByteArray;//未考虑后续还有粘包的情况
-            byte[] response = new byte[]{(byte)0xFE,(byte)0xFE,(byte)0xFE};
+            }
+            ByteArray recPack = (ByteArray)data;
             logger.debug("Gtw1P1Decode decode");
             logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            logger.debug("server收到的包:\n" + HexUtil.ByteToString(byteArray.toBytes(), " "));
-            logger.info("收到的包:"+HexUtil.ByteToString(byteArray.toBytes(), " "));
-            //如果是心跳包或握手包则立即回应
-            if((byteArray.getAt(0) == (byte)0xAA) && 
-            	(byteArray.getAt(1) == (byte)0xAA)&&
-            	(byteArray.getAt(2) == (byte)0xAA)){
-              session.write(response); 
-              return null;
-            }
-            if(ProtocolUtil.isNotData(byteArray)){
-            	logger.debug("无效的数据包.");
-            	return null;
-            }
-            //解包            
-            Message message = ProtocolUtil.unpack(byteArray);
-            if (message == null) {
-                logger.debug("解包失败.");
-                return null;
-            }
-            logger.debug("Message server :" + message.toString());
-            //TODO 处理分包
-            //解析数据
-            message = ProtocolUtil.parse(message, byteArray);
-            //回应数据包       
-            System.out.println("====dsjakddddddlljkdskdsjkas");
-            System.out.println(message.getCenterNo() + "-" + Long.toString(session.getId()));
-            System.out.println("dsjakddddddlljkdskdsjkas======");
+            logger.debug("server收到的包:\n" + HexUtil.ByteToString(recPack.toBytes(), " "));
+            logger.info("收到的包:"+HexUtil.ByteToString(recPack.toBytes(), " "));            
+            int recPackLen = recPack.size();
+            int lessPackLen = recPackLen;
+            while(lessPackLen > 3){
+            	if(recPack.getAt(0) == (byte) 0xAA && recPack.getAt(1) == (byte)0xAA 
+            			&& recPack.getAt(2) == (byte)0xAA){
+            		//如果是心跳包或握手包则立即回应
+                    session.write(response); 
+                    lessPackLen -= 3; 
+                    recPack.removeAt(0,3);
+            	}else if(recPack.getBeginByte() == (byte)0x7E && recPack.size() >= 19){
+            		//解包            
+            		if(recPack.getAt(18) == (byte)0x7E){ 
+            			ByteArray tmp = new ByteArray(recPack.subByteArray(recPack,0,18));
+            			Message message = ProtocolUtil.unpack(tmp);
+                        if (message == null) {
+                            logger.debug("解包失败.");
+                        }else{
+                        	logger.debug("Message server :" + message.toString());
+                            //解析数据
+                            message = ProtocolUtil.parse(message, tmp);
+                            listMsg.add(message);
+                        }
+            		}                    
+            		lessPackLen -= 19;
+                    recPack.removeAt(0,19);  
+            	}else{
+            		//移除不完整的包
+            		recPack.removeAt(0); 
+            		lessPackLen -= 1;
+            	}            	
+            }            
             session.write(response);
-            return message;           
+            return listMsg;           
         }
     }
 
@@ -120,17 +132,4 @@ public class HardwareCodeFilter extends IoFilterAdapter {
         }
 
     }
-    
-    private ByteArray dropPack(ByteArray bytes){
-		int i = bytes.size();
-		while(i>3){		  
-		  if(bytes.getBeginByte() != 0x7E){
-			  bytes.removeAt(0);
-			  i -= 1;
-		  }else{
-			  i = 0;
-		  }
-	   }
-       return bytes;
-	}
 }
