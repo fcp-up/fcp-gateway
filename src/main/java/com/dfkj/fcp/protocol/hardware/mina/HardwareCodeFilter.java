@@ -98,6 +98,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
                             //解析数据
                             message = ProtocolUtil.parse(message, tmp);
                             listMsg.add(message);
+                            session.write(response);
                         }
             		}                    
             		lessPackLen -= 19;
@@ -107,9 +108,8 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             		recPack.removeAt(0); 
             		lessPackLen -= 1;
             	}            	
-            }            
-            session.write(response);
-            return listMsg;           
+            }          
+           return listMsg;           
         }
     }
 

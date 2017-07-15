@@ -24,7 +24,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     private final static AcpLogger logger = new AcpLogger(HardwareServerHandler.class);
 
     public void messageReceived(IoSession session, Object message) throws Exception {
-    	synchronized(message){
+    	/*synchronized(message){*/
     		if(!(message instanceof ArrayList)){
         		return;
         	}    	
@@ -64,7 +64,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         	}finally{
         		//消息缓存处理    		
         	}
-    	}      	
+/*    	}  */    	
     	
     }
     
