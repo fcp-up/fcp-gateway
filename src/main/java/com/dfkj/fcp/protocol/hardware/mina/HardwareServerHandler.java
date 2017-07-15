@@ -24,7 +24,6 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     private final static AcpLogger logger = new AcpLogger(HardwareServerHandler.class);
 
     public void messageReceived(IoSession session, Object message) throws Exception {
-    	/*synchronized(message){*/
     		if(!(message instanceof ArrayList)){
         		return;
         	}    	
@@ -34,38 +33,47 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         		//ArrayListUtil.removeDuplicate(recvMsg); 		
         		int len = recvMsg.size();
         		int i = 0;
+        		JSONArray messageOnLineList = new JSONArray();
+        		JSONArray messageAlarmList = new JSONArray();
+        		String requestOnLineURL = AccessUtils.ONLINE_SERVICE;
+        		String requestAlarmLineURL = AccessUtils.ALARM_SERVICE; 
         		while(i < len){
         			Message msg = (Message)recvMsg.get(i);    	
-                	JSONObject messageObj = new JSONObject();
-                	JSONArray messageList = new JSONArray();
-                	String requestURL="";
+                	JSONObject messageObj = new JSONObject();                	
                 	if(msg.getMsgType() == EMessageType.HELLO){
-                		requestURL = AccessUtils.ONLINE_SERVICE;
                 		messageObj.put("terminalNo", msg.getCenterNo());
                 		messageObj.put("state", 1);
                 		messageObj.put("terminalSignal", msg.getCenterSignal());
+                		messageOnLineList.add(messageObj); 
                 	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
-                		requestURL = AccessUtils.ALARM_SERVICE;  
                 		messageObj.put("terminalNo", msg.getCenterNo());
                 		messageObj.put("deviceNo", msg.getDeviceId());
                 		messageObj.put("isAlarm", msg.getIsAlarm());
                 		messageObj.put("pressure", msg.getVoltage()); 
                 		messageObj.put("deviceSignal", msg.getDeviceSignal());
-          		     }  
-                	messageList.add(messageObj);  
-            		Map<String,String> reqJsonParam = new HashMap<>();
-            		reqJsonParam.put("params", messageList.toString());
-                	HttpRequestUtils.httpPost(requestURL,reqJsonParam);
+                		messageAlarmList.add(messageObj); 
+          		     } 
                 	i += 1;
         		}
+        		if(messageOnLineList.size()>0){
+        			Map<String,String> reqJsonOnLineParam = new HashMap<>();
+            		reqJsonOnLineParam.put("params", messageOnLineList.toString());
+                	HttpRequestUtils.httpPost(requestOnLineURL,reqJsonOnLineParam);  
+                	messageOnLineList.clear();
+        		}        		
+        		if(messageAlarmList.size()>0){
+        			Map<String,String> reqJsonAlarmParam = new HashMap<>();
+                	reqJsonAlarmParam.put("params", messageAlarmList.toString());
+                	HttpRequestUtils.httpPost(requestAlarmLineURL,reqJsonAlarmParam);
+                	messageAlarmList.clear();
+        		}     		          	
+            	recvMsg.clear();            	
         	}catch(Exception e){
         		e.printStackTrace();
         		logger.info("业务处理失败.");
         	}finally{
         		//消息缓存处理    		
-        	}
-/*    	}  */    	
-    	
+        	}    	
     }
     
 }

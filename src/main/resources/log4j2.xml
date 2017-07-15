@@ -2,7 +2,7 @@
 <configuration status="error">
 	<appenders>
 		<Console name="Console" target="SYSTEM_OUT">
-			<ThresholdFilter level="trace" onMatch="ACCEPT"
+			<ThresholdFilter level="info" onMatch="ACCEPT"
 				onMismatch="DENY" />
 			<!-- pattern="%d{HH:mm:ss.SSS} [%-5level] %class{36} %msg%xEx%n" -->
 			<!-- pattern="%d{HH:mm:ss.SSS} [%-5level] %msg%xEx%n" -->
@@ -16,15 +16,15 @@
 			<SizeBasedTriggeringPolicy size="100MB" />
 			<DefaultRolloverStrategy max="200" />  
 		</RollingFile>-->
-		<RollingFile name="RollingFile" fileName="/home/yhzx/gateway/log/gate.log"
-			filePattern="/home/yhzx/gateway/logs/$${date:yyyy-MM-dd}/gateway-%d{yyyy-MM-dd }-%i.log.gz">
+		<RollingFile name="RollingFile" fileName="D:/dfthings/fcp_up/logs/fcp-gateway.log"
+			filePattern="D:/dfthings/fcp_up/logs/$${date:yyyy-MM-dd}/gateway-%d{yyyy-MM-dd }-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy.MM.dd 'at' HH:mm:ss z} %-5level %msg%xEx%n" />
 			<SizeBasedTriggeringPolicy size="100MB" />
 			<DefaultRolloverStrategy max="200" />  
 		</RollingFile> 
 	</appenders>
 	<loggers>
-		<root level="trace"><!-- trace info warn error -->
+		<root level="info"><!-- trace info warn error -->
 			<appender-ref ref="RollingFile" />
 			<appender-ref ref="Console" />
 		</root>
