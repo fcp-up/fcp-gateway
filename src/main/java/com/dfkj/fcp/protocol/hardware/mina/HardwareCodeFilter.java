@@ -79,7 +79,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             logger.info("收到的包:"+HexUtil.ByteToString(recPack.toBytes(), " "));            
             int recPackLen = recPack.size();
             int lessPackLen = recPackLen;
-            while(lessPackLen > 3){
+            while(lessPackLen >= 3){
             	if(recPack.getAt(0) == (byte) 0xAA && recPack.getAt(1) == (byte)0xAA 
             			&& recPack.getAt(2) == (byte)0xAA){
             		//如果是心跳包或握手包则立即回应
