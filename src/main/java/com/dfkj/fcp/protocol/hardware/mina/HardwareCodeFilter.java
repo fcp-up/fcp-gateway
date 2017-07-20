@@ -13,7 +13,9 @@ import org.apache.mina.core.write.WriteRequest;
 import com.dfkj.fcp.core.logger.AcpLogger;
 import com.dfkj.fcp.core.util.ByteArray;
 import com.dfkj.fcp.core.util.HexUtil;
+import com.dfkj.fcp.core.vo.HelloMessage;
 import com.dfkj.fcp.core.vo.Message;
+import com.dfkj.fcp.protocol.hardware.factory.HardwareInstanceFactory;
 import com.dfkj.fcp.protocol.hardware.util.ProtocolUtil;
 
 /**
@@ -82,6 +84,11 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             while(lessPackLen >= 3){
             	if(recPack.getAt(0) == (byte) 0xAA && recPack.getAt(1) == (byte)0xAA 
             			&& recPack.getAt(2) == (byte)0xAA){
+            		//根据session打印终端信息
+            		HelloMessage msg =  HardwareInstanceFactory.getMinaServerInstance().terminalsMap.get(session.getId());
+            		if(null != msg){
+            			logger.info("平台收到集中器【" + msg.getCenterNo() + "】的心跳包.");
+            		}
             		//如果是心跳包或握手包则立即回应
                     session.write(response); 
                     lessPackLen -= 3; 

@@ -32,9 +32,9 @@ public class ProtocolUtil {
 			byteArray.removeBeginByte().removeLastByte(); // 掐头去尾
 			//CRC校验	
 			int crc = (int)CRC16.calcCrc16(byteArray.subByteArray(byteArray,6,14));
-			System.out.println(crc);
+			//System.out.println(crc);
 			int currentCRC = byteArray.getAt(15)&0x00FF | byteArray.getAt(16) << 8 & 0xFF00;
-			System.out.println(currentCRC);
+			//System.out.println(currentCRC);
 			if(crc != currentCRC){
 				logger.debug("数据包效验失败.");
 				break;

@@ -48,7 +48,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                 		messageObj.put("terminalSignal", msg.getCenterSignal());
                 		messageObj.put("stateTime", msg.getRecvMsgDate());
                 		messageOnLineList.add(messageObj);     
-                		logger.info("终端【" + msg.getCenterNo() + "】上线");
+                		logger.info("集中器【" + msg.getCenterNo() + "】上线.");
                 		HelloMessage helloMsg = new HelloMessage(msg.getCenterNo(),msg.getCenterSignal(),1,msg.getRecvMsgDate());
                 		HardwareInstanceFactory.getMinaServerInstance().terminalsMap.put(session.getId(),helloMsg);
                 	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
@@ -58,14 +58,17 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                 		messageObj.put("pressure", msg.getVoltage()); 
                 		messageObj.put("deviceSignal", msg.getDeviceSignal());
                 		messageAlarmList.add(messageObj); 
+                		logger.info("集中器【" + msg.getCenterNo() + "-" + msg.getDeviceId()  + "】请求报警.");
           		     } 
                 	i += 1;
         		}
         		if(messageOnLineList.size()>0){
-                	reportData(messageOnLineList,requestOnLineURL);
+        			messageOnLineList.clear();
+                	//reportData(messageOnLineList,requestOnLineURL);
         		}        		
         		if(messageAlarmList.size()>0){
-                	reportData(messageAlarmList,requestAlarmLineURL);      	
+        			messageAlarmList.clear();
+                	//reportData(messageAlarmList,requestAlarmLineURL);      	
         		}     		          	
             	recvMsg.clear();            	
         	}catch(Exception e){
@@ -90,7 +93,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     		msg.setStateDate(new Date());
     		logger.info(msg.toString());
     		//向平台汇报当前状态
-    		logger.info("终端【" + msg.getCenterNo() + "】离线");
+    		logger.info("集中器【" + msg.getCenterNo() + "】离线.");
     		messageObj.put("terminalNo", msg.getCenterNo());
     		messageObj.put("state", msg.getState());
     		messageObj.put("stateTime", msg.getStateDate());
