@@ -15,7 +15,7 @@ public class AccessUtils {
 	/**
 	 * 报警服务请求地址
 	 */
-	public static final String ALARM_SERVICE = String.format("http://%s:%d/fcp/terminal/requestAlarm/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
+	public static final String ALARM_SERVICE = String.format("http://%s:%d/fcp/alarm/deviceAlarm/", ALARM_SERVICE_HOST, ALARM_SERVICE_PORT);
 
 	
 	/**

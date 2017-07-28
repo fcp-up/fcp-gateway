@@ -64,11 +64,11 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         		}
         		if(messageOnLineList.size()>0){
         			messageOnLineList.clear();
-                	//reportData(messageOnLineList,requestOnLineURL);
+                	reportData(messageOnLineList,requestOnLineURL);
         		}        		
         		if(messageAlarmList.size()>0){
         			messageAlarmList.clear();
-                	//reportData(messageAlarmList,requestAlarmLineURL);      	
+                	reportData(messageAlarmList,requestAlarmLineURL);      	
         		}     		          	
             	recvMsg.clear();            	
         	}catch(Exception e){
