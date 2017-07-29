@@ -36,7 +36,7 @@ public class ProtocolUtil {
 			int currentCRC = byteArray.getAt(15)&0x00FF | byteArray.getAt(16) << 8 & 0xFF00;
 			//System.out.println(currentCRC);
 			if(crc != currentCRC){
-				logger.debug("数据包效验失败.");
+				logger.info("数据包效验失败.");
 				break;
 			}
 			//去掉校验码			

@@ -40,13 +40,15 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         		//ArrayListUtil.removeDuplicate(recvMsg); 		
         		int len = recvMsg.size();
         		int i = 0;
+        		messageOnLineList.clear();
+        		messageAlarmList.clear();
         		while(i < len){
         			Message msg = (Message)recvMsg.get(i);   	
         			if(msg.getMsgType() == EMessageType.HELLO){
                 		messageObj.put("terminalNo", msg.getCenterNo());
                 		messageObj.put("state", 1);
                 		messageObj.put("terminalSignal", msg.getCenterSignal());
-                		messageObj.put("stateTime", msg.getRecvMsgDate());
+//                		messageObj.put("stateTime", msg.getRecvMsgDate());
                 		messageOnLineList.add(messageObj);     
                 		logger.info("集中器【" + msg.getCenterNo() + "】上线.");
                 		HelloMessage helloMsg = new HelloMessage(msg.getCenterNo(),msg.getCenterSignal(),1,msg.getRecvMsgDate());
@@ -63,12 +65,12 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                 	i += 1;
         		}
         		if(messageOnLineList.size()>0){
-        			messageOnLineList.clear();
                 	reportData(messageOnLineList,requestOnLineURL);
+        			messageOnLineList.clear();
         		}        		
         		if(messageAlarmList.size()>0){
+                	reportData(messageAlarmList,requestAlarmLineURL); 
         			messageAlarmList.clear();
-                	reportData(messageAlarmList,requestAlarmLineURL);      	
         		}     		          	
             	recvMsg.clear();            	
         	}catch(Exception e){
@@ -96,7 +98,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     		logger.info("集中器【" + msg.getCenterNo() + "】离线.");
     		messageObj.put("terminalNo", msg.getCenterNo());
     		messageObj.put("state", msg.getState());
-    		messageObj.put("stateTime", msg.getStateDate());
+//    		messageObj.put("stateTime", msg.getStateDate());
     		messageOnLineList.add(messageObj);
     		reportData(messageOnLineList,requestOnLineURL);
     	}
