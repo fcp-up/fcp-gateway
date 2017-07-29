@@ -111,7 +111,7 @@ public class HardwareCodeFilter extends IoFilterAdapter {
             		lessPackLen -= 19;
                     recPack.removeAt(0,19);  
             	}else{
-            		//移除不完整的包
+            		//移除不完整的包     
             		recPack.removeAt(0); 
             		lessPackLen -= 1;
             	}            	

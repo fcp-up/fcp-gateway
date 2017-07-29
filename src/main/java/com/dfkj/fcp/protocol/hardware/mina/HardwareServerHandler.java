@@ -49,10 +49,9 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                 		messageObj.put("state", 1);
                 		messageObj.put("terminalSignal", msg.getCenterSignal());
 //                		messageObj.put("stateTime", msg.getRecvMsgDate());
-                		messageOnLineList.add(messageObj);     
+                		messageOnLineList.add(messageObj);    
+                		refreshState(msg,session);
                 		logger.info("集中器【" + msg.getCenterNo() + "】上线.");
-                		HelloMessage helloMsg = new HelloMessage(msg.getCenterNo(),msg.getCenterSignal(),1,msg.getRecvMsgDate());
-                		HardwareInstanceFactory.getMinaServerInstance().terminalsMap.put(session.getId(),helloMsg);
                 	}else if(msg.getMsgType() == EMessageType.SENSOR_DATA){
                 		messageObj.put("terminalNo", msg.getCenterNo());
                 		messageObj.put("deviceNo", msg.getDeviceId());
@@ -60,6 +59,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
                 		messageObj.put("pressure", msg.getVoltage()); 
                 		messageObj.put("deviceSignal", msg.getDeviceSignal());
                 		messageAlarmList.add(messageObj); 
+                		refreshState(msg,session);
                 		logger.info("集中器【" + msg.getCenterNo() + "-" + msg.getDeviceId()  + "】请求报警.");
           		     } 
                 	i += 1;
@@ -114,6 +114,10 @@ public class HardwareServerHandler extends IoHandlerAdapter {
         dataList.clear();
     }
     
-    
+    //刷新终端当前状态
+    public void refreshState(Message msg,IoSession session) {
+    	HelloMessage helloMsg = new HelloMessage(msg.getCenterNo(),msg.getCenterSignal(),1,msg.getRecvMsgDate());
+		HardwareInstanceFactory.getMinaServerInstance().terminalsMap.put(session.getId(),helloMsg);
+    }
     
 }
