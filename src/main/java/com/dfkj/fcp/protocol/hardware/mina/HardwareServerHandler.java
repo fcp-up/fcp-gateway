@@ -116,6 +116,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     		HardwareInstanceFactory.getMinaServerInstance().reportData(messageOnLineList,requestOnLineURL);
     	}
     	HardwareInstanceFactory.getMinaServerInstance().terminalsMap.remove(session.getId());
+    	session.closeOnFlush();
     }    
 //    //汇报数据
 //    public void reportData(JSONArray dataList,String url){
