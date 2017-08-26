@@ -97,10 +97,11 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     		messageOnLineList.add(messageObj);
     		HardwareInstanceFactory.getMinaServerInstance().reportData(messageOnLineList,requestOnLineURL);
     	}
-    	logger.info("session " + Long.toString(session.getId()) + " 断开.");
+    	logger.info("session " + Long.toString(session.getId()) + " 断开.");    	
     }
     
-    public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
+    @SuppressWarnings("deprecation")
+	public void sessionIdle(IoSession session, IdleStatus status) throws Exception {
     	HelloMessage msg =  HardwareInstanceFactory.getMinaServerInstance().terminalsMap.get(session.getId());
     	if(null != msg){
         	messageOnLineList.clear();
@@ -116,7 +117,7 @@ public class HardwareServerHandler extends IoHandlerAdapter {
     		HardwareInstanceFactory.getMinaServerInstance().reportData(messageOnLineList,requestOnLineURL);
     	}
     	HardwareInstanceFactory.getMinaServerInstance().terminalsMap.remove(session.getId());
-    	session.closeOnFlush();
+    	session.close(true);	
     }    
 //    //汇报数据
 //    public void reportData(JSONArray dataList,String url){
